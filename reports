@@ -1,0 +1,59 @@
+$acc = mysql_query("SELECT p.CustomerID, SUM(p.AmountPaid) AS `sum`, p.DateIn, b.ID, b.ApartmentID, b.Refund AS Refund FROM payments AS p, customers AS b WHERE p.CustomerID = b.ID AND b.ApartmentID='".$row['ID']."' AND PaymentFor='0' AND p.DateIn BETWEEN '$date1' AND '$date2'");
+
+..................................
+//Function to generate report date
+ if (!function_exists("FormatReportDate")) {
+  function FormatReportDate($deti)
+  {
+   
+   $monthdays = GetMonthDays($deti);   
+   $date2 = explode('-',$deti);
+   $day = $date2[2];
+   if($day < $monthdays){
+    $date = $date2[0]."-".$date2[1]."-".($date2[2]+1);
+   }elseif(($day == $monthdays) && ($date2[1] != 12)){
+    $date = $date2[0]."-". ($date2[1]+1) . "-01";
+   }else{
+    $date = ($date2[0]+1) ."-01-01";
+   }      
+   return $date;
+  }
+ }
+
+
+...........
+$date1 = $_POST['date1']." 00:00:00";
+ $date2 = FormatReportDate($_POST['date2'])." 00:00:00";
+
+.......
+
+printing
+......
+<style media="print" type="text/css">
+ #content{ 
+  margin-top:-40px !important; 
+ }
+ #content table.noboda {
+  border: 0px solid #fff !important;
+  font-size:12px !important;
+  letter-spacing:1px;
+  color:#000;
+ }
+ #content table td.noboda {
+  border: 0px solid #fff !important;
+  font-size:12px !important;
+  letter-spacing:1px;
+  color:#000;
+ }
+ .invfuta{ font-size:11px !important; }
+ #fullpage{margin-top:0px !important; z-index:999999999999 !important;  }
+ @page{margin:0px auto;}
+</style>
+
+..............................
+<?php
+ if(isset($_GET['print'])){ ?>
+  <script type="text/javascript">
+   window.print();
+  </script>
+<?php } ?>
